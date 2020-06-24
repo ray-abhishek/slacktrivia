@@ -5,13 +5,45 @@ class quizCreation:
 			"text": {
 				"type": "plain_text",
 				"text": "Quiz creation criteria",
-				"emoji": true
+				"emoji": True
 			}
 		}
     
     DIVIDER_BLOCK={
 			"type": "divider"
 		}
+
+    SUBMIT_BLOCK={
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Submit",
+						"emoji": True
+					},
+                    "style": "primary",
+					"value": "click_me_123"
+				}
+			]
+		}
+
+    CHANNEL_BLOCK={
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "Select Channel to start quiz"
+			},
+			"accessory": {
+					"type": "channels_select",
+					"placeholder": {
+						"type": "plain_text",
+						"text": "Select a channel",
+						"emoji": True
+					}
+				}
+			}
 
     def __init__(self, channel):
         self.channel = channel
@@ -30,13 +62,15 @@ class quizCreation:
                 self.DIVIDER_BLOCK,
                 self.get_category_block(),
                 self.get_question_number_block(),
+                self.CHANNEL_BLOCK,
                 self.get_timespan_block(),
-                self.DIVIDER_BLOCK
+                self.DIVIDER_BLOCK,
+                self.SUBMIT_BLOCK
             ]
         }
 
-    @staticmethod
-    def create_select_block(array,length,block_title,select_title):
+    
+    def create_select_block(self,array,length,block_title,select_title):
         
         options=[]
 
@@ -44,8 +78,8 @@ class quizCreation:
             obj={}
             obj["text"]={
                 "type":"plain_text",
-                "text":array[x],
-                "emoji":true
+                "text":str(array[x]),
+                "emoji":True
             }
             obj["value"]="value-"+str(x)
             options.append(obj)
@@ -62,7 +96,7 @@ class quizCreation:
 				"placeholder": {
 					"type": "plain_text",
 					"text": select_title,
-					"emoji": true
+					"emoji": True
 				},
 				"options":options
 			}
@@ -78,7 +112,7 @@ class quizCreation:
 
         select_title="Select a Category"
 
-        return create_select_block(category,length,block_title,select_title)
+        return self.create_select_block(category,length,block_title,select_title)
     
 
     def get_question_number_block(self):
@@ -90,7 +124,7 @@ class quizCreation:
 
         select_title="Select questions"
 
-        return create_select_block(questions,length,block_title,select_title)
+        return self.create_select_block(questions,length,block_title,select_title)
 
     
     def get_timespan_block(self):
@@ -102,4 +136,6 @@ class quizCreation:
 
         select_title ="Select time"
 
-        return create_select_block(time,length,block_title,select_title)
+        return self.create_select_block(time,length,block_title,select_title)
+
+

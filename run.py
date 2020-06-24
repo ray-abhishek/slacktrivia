@@ -5,6 +5,7 @@ from app import create_app
 from slack import WebClient
 from slackeventsapi import SlackEventAdapter
 from onboarding import OnboardingTutorial
+from quizcreation import quizCreation
 import ssl as ssl_lib
 import certifi
 
@@ -26,7 +27,7 @@ onboarding_tutorials_sent = {}
 
 def start_onboarding(user_id: str, channel: str):
     # Create a new onboarding tutorial.
-    onboarding_tutorial = OnboardingTutorial(channel)
+    onboarding_tutorial = quizCreation(channel)
 
     # Get the onboarding message payload
     message = onboarding_tutorial.get_message_payload()
