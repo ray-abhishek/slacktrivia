@@ -4,7 +4,7 @@ from flask import Flask
 from app import create_app
 from slack import WebClient
 from slackeventsapi import SlackEventAdapter
-from onboarding import OnboardingTutorial
+from quizcreation import quizCreation
 import ssl as ssl_lib
 import certifi
 
@@ -13,7 +13,7 @@ ssl_context = ssl_lib.create_default_context(cafile=certifi.where())
 # Initialize a Flask app to host the events adapter
 config_name = 'development'
 app = create_app(config_name)
-#app = Flask(__name__)
+#app = Flask(__name__)   --> This is now done inside the above create_app method. 
 slack_events_adapter = SlackEventAdapter(os.environ["SLACK_SIGNING_SECRET"], "/slack/events", app)
 
 # Initialize a Web API client
@@ -26,7 +26,7 @@ onboarding_tutorials_sent = {}
 
 def start_onboarding(user_id: str, channel: str):
     # Create a new onboarding tutorial.
-    onboarding_tutorial = OnboardingTutorial(channel)
+    onboarding_tutorial = quizCreation(channel)
 
     # Get the onboarding message payload
     message = onboarding_tutorial.get_message_payload()
