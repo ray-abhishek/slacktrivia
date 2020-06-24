@@ -61,7 +61,6 @@ class quizCreation:
                 self.HEADING_BLOCK,
                 self.DIVIDER_BLOCK,
                 self.get_category_block(),
-                self.get_question_number_block(),
                 self.CHANNEL_BLOCK,
                 self.get_timespan_block(),
                 self.DIVIDER_BLOCK,
@@ -115,7 +114,7 @@ class quizCreation:
         return self.create_select_block(category,length,block_title,select_title)
     
 
-    def get_question_number_block(self):
+    """def get_question_number_block(self):
         questions=[5,10,15]
 
         length=3
@@ -125,7 +124,7 @@ class quizCreation:
         select_title="Select questions"
 
         return self.create_select_block(questions,length,block_title,select_title)
-
+"""
     
     def get_timespan_block(self):
         time=["5 min","10 min","15 min"]
