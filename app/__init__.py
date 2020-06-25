@@ -3,7 +3,9 @@ from config import app_config
 #from flask_cors import CORS
 from flask_migrate import Migrate
 from app.models import *
+from .slash import slash as slash_blueprint
 from .sendquiz import sendquiz as sendquiz_blueprint
+
 
 
 
@@ -18,6 +20,7 @@ def create_app(config_name):
     migrate = Migrate(app, db)
 
     
+    app.register_blueprint(slash_blueprint, url_prefix='/slash')
     app.register_blueprint(sendquiz_blueprint, url_prefix='/sendquiz')
     
 

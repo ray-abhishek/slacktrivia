@@ -9,6 +9,7 @@ from app.models import db, Category, Question, Question_Category
 #from quizdisplay import QuizDisplay
 import ssl as ssl_lib
 import certifi
+from greetings import Greetings
 import json
 
 ssl_context = ssl_lib.create_default_context(cafile=certifi.where())
@@ -72,6 +73,45 @@ def message(payload):
     print(category_list," ARE CATEGORIES")
     if text and text.lower() == "start":
         return start_onboarding(user_id, channel_id, category_list)
+
+
+
+user_details={}
+
+@slack_events_adapter.on("app_home_opened")
+def welcomeMessage(payload):
+
+    event = payload.get("event", {})
+
+    channel_id = event.get("channel")
+    user_id = event.get("user")
+    timestamp=event.get("event_ts")
+
+    status=user_details.get((channel_id,user_id),None)
+
+    if status == None:
+    
+        greeting=Greetings(channel_id)
+
+        message=greeting.get_message_payload()
+
+        user_details[(channel_id,user_id)]=timestamp
+
+        return slack_web_client.chat_postMessage(**message)
+    
+    else:
+        diff = float(timestamp)-float(status)
+
+        if diff >= 15:
+            greeting=Greetings(channel_id)
+
+            message=greeting.get_message_payload()
+
+            user_details[(channel_id,user_id)]=timestamp
+
+            return slack_web_client.chat_postMessage(**message)
+        else:
+            pass            
 
 
 
