@@ -28,7 +28,7 @@ slack_web_client = WebClient(token=os.environ['SLACK_BOT_TOKEN'])
 #quiz_sent = {}
 onboarding_tutorials_sent = {}
 
-
+"""
 def start_onboarding(user_id: str, channel: str, category_list: list):
     # Create a new quizCreation.
     onboarding_tutorial = quizCreation(channel, category_list)
@@ -56,9 +56,7 @@ def start_onboarding(user_id: str, channel: str, category_list: list):
 # Here we'll link the message callback to the 'message' event.
 @slack_events_adapter.on("message")
 def message(payload):
-    """Display the onboarding welcome message after receiving a message
-    that contains "start".
-    """
+
     event = payload.get("event", {})
 
     channel_id = event.get("channel")
@@ -73,7 +71,7 @@ def message(payload):
     print(category_list," ARE CATEGORIES")
     if text and text.lower() == "start":
         return start_onboarding(user_id, channel_id, category_list)
-
+"""
 
 
 user_details={}
@@ -86,7 +84,7 @@ def welcomeMessage(payload):
     channel_id = event.get("channel")
     user_id = event.get("user")
     timestamp=event.get("event_ts")
-
+        
     status=user_details.get((channel_id,user_id),None)
 
     if status == None:
