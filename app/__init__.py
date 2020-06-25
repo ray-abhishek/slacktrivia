@@ -3,7 +3,7 @@ from config import app_config
 from flask_cors import CORS
 from flask_migrate import Migrate
 from app.models import *
-#from .cart import cart as cart_blueprint
+from .slash import slash as slash_blueprint
 
 
 
@@ -17,7 +17,7 @@ def create_app(config_name):
     migrate = Migrate(app, db)
 
     
-    #app.register_blueprint(cart_blueprint, url_prefix='/cart')
+    app.register_blueprint(slash_blueprint, url_prefix='/slash')
     
 
     return app
