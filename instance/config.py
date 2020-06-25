@@ -1,2 +1,2 @@
 SECRET_KEY = 'masai_school'
-SQLALCHEMY_DATABASE_URI = 'mysql://root:Bluejibble@123@localhost/SlackQuiz'
+SQLALCHEMY_DATABASE_URI = 'mysql://root:@TorresDash09@localhost/flipkart'
