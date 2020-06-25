@@ -17,8 +17,6 @@ def createQuiz():
 
         message = quiz_message.get_message_payload()
 
-        message["response_type"]="in_channel"
-
         return message
     
     return "Failure"
