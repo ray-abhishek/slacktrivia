@@ -80,7 +80,7 @@ class quizCreation:
                 "text":str(array[x]),
                 "emoji":True
             }
-            obj["value"]="value-"+str(x)
+            obj["value"]=str(array[x])
             options.append(obj)
 
         
