@@ -48,6 +48,13 @@ class Quiz(db.Model):
     author_id = db.Column(db.String(100))
     timestamp = db.Column(db.String(100))
 
+class Quiz_Question(db.Model):
+    __tablename__="quiz_question"
+    id=db.Column(db.Integer,primary_key=True)
+    quiz_id = db.Column(db.Integer,db.ForeignKey("quiz.id"))
+    question_id=db.Column(db.Integer,db.ForeignKey("question.id"))
+
+
 class Attempt(db.Model):
     __tablename__ = "attempt"
     id = db.Column(db.Integer,primary_key=True)
