@@ -1,16 +1,6 @@
 class QuizDisplay:
     """Constructs the question and options and stores the state of which options were selected."""
-    """
-    QUESTION_BLOCK = {
-        "type": "section",
-        "text": {
-            "type": "mrkdwn",
-            "text": (
-                "*Enter Question Here*\n\n"
-            ),
-        },
-    }
-    """
+
     #DIVIDER_BLOCK = {"type": "divider"}
 
     def __init__(self, channel):
@@ -33,29 +23,60 @@ class QuizDisplay:
             "username": self.username,
             "icon_emoji": self.icon_emoji,
             "blocks": [
-                self.QUESTION_BLOCK,
+                #self.QUESTION_BLOCK,
                 #self.DIVIDER_BLOCK,
-                *self._get_question_block(),
-                *self._get_options_block(),
+                self._get_question_block(),
+                self._get_options_block(),
                 #self.DIVIDER_BLOCK,
             ],
         }
 
+    #This takes the question string, puts it in JSON Object and returns it.
+    def _get_question(self,question):
+        return {
+            "type": "section",
+			"text": {
+				"type": "plain_text",
+				"text": str(question),
+				"emoji": True
+			}
+        }
+
+
+    def _build_option(self,option):
+        return {
+            "type": "button",
+			"text": {
+					"type": "plain_text",
+					"text": str(option),
+					"emoji": True
+					},
+			"value": str(option)
+        }
+
+    #This takes the 4 json option objects, wraps them in the actions type Block Object and returns it.
+    def _get_options(self):
+        return {
+            "type" : "actions",
+            "elements" : [self.option1,self.option2,self.option3,self.option4]
+        }
+
+
     #This returns the question block.
     def _get_question_block(self):
-        return _get_question(self.question)
+        return self._get_question(self.question)
 
     #This returns the options block.
     def _get_options_block(self):
-        return _get_options()
+        return self._get_options()
 
     # This init_message is called from run.py and supplied the parameters. Once the questions and options have been initialised, the message payload(get_message_payload) can be used to return Message Object
     def init_message(self,question,op1,op2,op3,op4):
         self.question = question 
-        self.option1 = _build_option(op1) 
-        self.option2 = _build_option(op2) 
-        self.option3 = _build_option(op3) 
-        self.option4 = _build_option(op4) 
+        self.option1 = self._build_option(op1) 
+        self.option2 = self._build_option(op2) 
+        self.option3 = self._build_option(op3) 
+        self.option4 = self._build_option(op4) 
 
     # This method takes the correct answer as parameter and accordingly changes the color of the correct option to green, and rest to red. 
     def inform_user(self, answer):
@@ -80,37 +101,7 @@ class QuizDisplay:
             self.option3["style"] = "danger"
             self.option4["style"] = "primary"
 
-    #This takes the question string, puts it in JSON Object and returns it.
-    @staticmethod
-    def _get_question(question):
-        return {
-            "type": "section",
-			"text": {
-				"type": "plain_text",
-				"text": str(question),
-				"emoji": true
-			}
-        }
-
-    @staticmethod
-    def _build_option(option):
-        return {
-            "type": "button",
-			"text": {
-					"type": "plain_text",
-					"text": str(option),
-					"emoji": true
-					},
-			"value": str(option)
-        }
-
-    #This takes the 4 json option objects, wraps them in the actions type Block Object and returns it.
-    def _get_options(self):
-        return {
-            "type" : "actions",
-            "elements" : [self.option1,self.option2,self.option3,self.option4]
-        }
-
+    
 
 
     """
@@ -125,7 +116,7 @@ class QuizDisplay:
 					"text": {
 						"type": "plain_text",
 						"text": str(option1),
-						"emoji": true
+						"emoji": True
 					},
 					"value": str(option1)
 				},
@@ -134,7 +125,7 @@ class QuizDisplay:
 					"text": {
 						"type": "plain_text",
 						"text": str(option2),
-						"emoji": true
+						"emoji": True
 					},
 					"value": str(option2)
 				},
@@ -143,7 +134,7 @@ class QuizDisplay:
 					"text": {
 						"type": "plain_text",
 						"text": str(option3),
-						"emoji": true
+						"emoji": True
 					},
 					"value": str(option3),
                     
@@ -153,7 +144,7 @@ class QuizDisplay:
 					"text": {
 						"type": "plain_text",
 						"text": str(option4),
-						"emoji": true
+						"emoji": True
 					},
 					"value": str(option4)"
 				}

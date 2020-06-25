@@ -13,6 +13,38 @@ class quizCreation:
 			"type": "divider"
 		}
 
+    SUBMIT_BLOCK={
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Submit",
+						"emoji": True
+					},
+                    "style": "primary",
+					"value": "SUBMITBTN"
+				}
+			]
+		}
+
+    CHANNEL_BLOCK={
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "Select Channel to start quiz"
+			},
+			"accessory": {
+					"type": "channels_select",
+					"placeholder": {
+						"type": "plain_text",
+						"text": "Select a channel",
+						"emoji": True
+					}
+				}
+			}
+
     def __init__(self, channel):
         self.channel = channel
         self.username = "pythonboardingbot"
@@ -29,13 +61,14 @@ class quizCreation:
                 self.HEADING_BLOCK,
                 self.DIVIDER_BLOCK,
                 self.get_category_block(),
-                self.get_question_number_block(),
+                self.CHANNEL_BLOCK,
                 self.get_timespan_block(),
-                self.DIVIDER_BLOCK
+                self.DIVIDER_BLOCK,
+                self.SUBMIT_BLOCK
             ]
         }
+
     
-    #@staticmethod
     def create_select_block(self,array,length,block_title,select_title):
         
         options=[]
@@ -47,10 +80,9 @@ class quizCreation:
                 "text":str(array[x]),
                 "emoji":True
             }
-            obj["value"]="value-"+str(x)
+            obj["value"]=str(array[x])
             options.append(obj)
 
-        print("--------------------",options,"-----------------------")
         
         return {
 			"type": "section",
@@ -82,17 +114,13 @@ class quizCreation:
         return self.create_select_block(category,length,block_title,select_title)
     
 
-    def get_question_number_block(self):
+    """def get_question_number_block(self):
         questions=[5,10,15]
-
         length=3
-
         block_title="Select number of questions for quiz"
-
         select_title="Select questions"
-
         return self.create_select_block(questions,length,block_title,select_title)
-
+    """
     
     def get_timespan_block(self):
         time=["5 min","10 min","15 min"]

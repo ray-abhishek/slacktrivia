@@ -1,6 +1,6 @@
 from flask import Flask
 from config import app_config
-#from flask_cors import CORS, cross_origin
+#from flask_cors import CORS
 from flask_migrate import Migrate
 from app.models import *
 #from .cart import cart as cart_blueprint
