@@ -5,7 +5,8 @@ from app import create_app
 from slack import WebClient
 from slackeventsapi import SlackEventAdapter
 from quizcreation import quizCreation
-from quizdisplay import QuizDisplay
+from app.models import db, Category, Question, Question_Category
+#from quizdisplay import QuizDisplay
 import ssl as ssl_lib
 import certifi
 import json
@@ -25,69 +26,11 @@ slack_web_client = WebClient(token=os.environ['SLACK_BOT_TOKEN'])
 # quiz_sent = {"channel": {"user_id": OnboardingTutorial}}
 #quiz_sent = {}
 onboarding_tutorials_sent = {}
-params = {}
-
-@app.route("/actions",methods=['GET','POST'])
-def parse_params():
-
-    """
-    This method gets called everytime User interacts with the Message Block Kit Components such as Button or Select Elements. Those choices are then stored here(sent through request body in POST), and upon clicking of Submit Button, provided all choices are made, control is then transferred to display_quiz function.
-    """
-    
-    parsed_payload = json.loads(request.form["payload"])
-    print(parsed_payload," is the parsed_payload")
 
 
-    if parsed_payload["actions"][0]["type"] == "channels_select":
-        #print(parsed_payload["actions"][0]["type"]," is CHANNEL")
-        params["channel"] = parsed_payload["actions"][0]["selected_channel"]
-
-    elif parsed_payload["actions"][0]["type"] == "static_select":
-        if parsed_payload["actions"][0]["placeholder"]["text"] == 'Select time':
-            #print(parsed_payload["actions"][0]["selected_option"]["value"]," is Time Limit ")
-            params["time_limit"] = parsed_payload["actions"][0]["selected_option"]["value"]
-
-        elif parsed_payload["actions"][0]["placeholder"]["text"] == 'Select a Category':
-            #print(parsed_payload["actions"][0]["selected_option"]["value"]," is Category ")
-            params["category"] = parsed_payload["actions"][0]["selected_option"]["value"]
-
-    elif parsed_payload["actions"][0]["value"] == "SUBMITBTN":
-        print(params["channel"]," is channel")
-        print(params["time_limit"]," is time_limit")
-        print(params["category"]," category")
-        if params["channel"] != "" and params["time_limit"] != "" and params["category"] != "":
-            print("Calling display_quiz()")
-            display_quiz(params["channel"], params["time_limit"], params["category"])
-
-
-    print("HELLO in CAPSLOC\n\n\n\n\n")
-    return {"message":"hello"}
-
-def display_quiz(channel: str, time_limit: str, category: str):
-    # Create a new QuizDisplay Object.
-
-    quiz_display = QuizDisplay(channel)
-    quiz_display.init_message("How many Moons does Saturn have?",4,164,29,57)
-    # Get the onboarding message payload
-    message = quiz_display.get_message_payload()
-    
-    # Post the onboarding message in Slack
-    response = slack_web_client.chat_postMessage(**message)
-
-    # Capture the timestamp of the message we've just posted so
-    # we can use it to update the message after a user
-    # has completed an onboarding task.
-    quiz_display.timestamp = response["ts"]
-    """
-    # Store the message sent in quiz_sent
-    if channel not in quiz_sent:
-        quiz_sent[channel] = {}
-    quiz_sent[channel][user_id] = quiz_display
-    """
-
-def start_onboarding(user_id: str, channel: str):
+def start_onboarding(user_id: str, channel: str, category_list: list):
     # Create a new quizCreation.
-    onboarding_tutorial = quizCreation(channel)
+    onboarding_tutorial = quizCreation(channel, category_list)
 
     # Get the onboarding message payload
     message = onboarding_tutorial.get_message_payload()
@@ -105,83 +48,7 @@ def start_onboarding(user_id: str, channel: str):
         onboarding_tutorials_sent[channel] = {}
     onboarding_tutorials_sent[channel][user_id] = onboarding_tutorial
 
-"""
-# ================ Team Join Event =============== #
-# When the user first joins a team, the type of the event will be 'team_join'.
-# Here we'll link the onboarding_message callback to the 'team_join' event.
-@slack_events_adapter.on("team_join")
-def onboarding_message(payload):
 
-    event = payload.get("event", {})
-
-    # Get the id of the Slack user associated with the incoming event
-    user_id = event.get("user", {}).get("id")
-
-    # Open a DM with the new user.
-    response = slack_web_client.im_open(user=user_id)
-    channel = response["channel"]["id"]
-
-    # Post the onboarding message.
-    start_onboarding(user_id, channel)
-
-
-# ============= Reaction Added Events ============= #
-# When a users adds an emoji reaction to the onboarding message,
-# the type of the event will be 'reaction_added'.
-# Here we'll link the update_emoji callback to the 'reaction_added' event.
-@slack_events_adapter.on("reaction_added")
-def update_emoji(payload):
-
-    event = payload.get("event", {})
-
-    channel_id = event.get("item", {}).get("channel")
-    user_id = event.get("user")
-
-    if channel_id not in onboarding_tutorials_sent:
-        return
-
-    # Get the original tutorial sent.
-    onboarding_tutorial = onboarding_tutorials_sent[channel_id][user_id]
-
-    # Mark the reaction task as completed.
-    onboarding_tutorial.reaction_task_completed = True
-
-    # Get the new message payload
-    message = onboarding_tutorial.get_message_payload()
-
-    # Post the updated message in Slack
-    updated_message = slack_web_client.chat_update(**message)
-
-    # Update the timestamp saved on the onboarding tutorial object
-    onboarding_tutorial.timestamp = updated_message["ts"]
-
-
-# =============== Pin Added Events ================ #
-# When a users pins a message the type of the event will be 'pin_added'.
-# Here we'll link the update_pin callback to the 'reaction_added' event.
-@slack_events_adapter.on("pin_added")
-def update_pin(payload):
-
-    event = payload.get("event", {})
-
-    channel_id = event.get("channel_id")
-    user_id = event.get("user")
-
-    # Get the original tutorial sent.
-    onboarding_tutorial = onboarding_tutorials_sent[channel_id][user_id]
-
-    # Mark the pin task as completed.
-    onboarding_tutorial.pin_task_completed = True
-
-    # Get the new message payload
-    message = onboarding_tutorial.get_message_payload()
-
-    # Post the updated message in Slack
-    updated_message = slack_web_client.chat_update(**message)
-
-    # Update the timestamp saved on the onboarding tutorial object
-    onboarding_tutorial.timestamp = updated_message["ts"]
-"""
 
 # ============== Message Events ============= #
 # When a user sends a DM, the event type will be 'message'.
@@ -196,9 +63,15 @@ def message(payload):
     channel_id = event.get("channel")
     user_id = event.get("user")
     text = event.get("text")
+    category_list = []
+    raw_data = Category.query.with_entities(Category.name)
+    for row in raw_data:
+        print(row[0],' is row')
+        category_list.append(row[0])
 
+    print(category_list," ARE CATEGORIES")
     if text and text.lower() == "start":
-        return start_onboarding(user_id, channel_id)
+        return start_onboarding(user_id, channel_id, category_list)
 
 
 

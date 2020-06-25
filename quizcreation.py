@@ -45,11 +45,12 @@ class quizCreation:
 				}
 			}
 
-    def __init__(self, channel):
+    def __init__(self, channel, category_list):
         self.channel = channel
         self.username = "pythonboardingbot"
         self.icon_emoji = ":robot_face:"
         self.timestamp = ""
+        self.category = category_list
 
     def get_message_payload(self):
         return {
@@ -103,15 +104,15 @@ class quizCreation:
 
     def get_category_block(self):
 
-        category=["Coding","Game Of Thrones","History"]
+        #category=["Coding","Game Of Thrones","History"]
 
-        length=len(category)
+        length=len(self.category)
         
         block_title="Pick a category for quiz"
 
         select_title="Select a Category"
 
-        return self.create_select_block(category,length,block_title,select_title)
+        return self.create_select_block(self.category,length,block_title,select_title)
     
 
     """def get_question_number_block(self):
