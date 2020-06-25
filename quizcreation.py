@@ -24,7 +24,7 @@ class quizCreation:
 						"emoji": True
 					},
                     "style": "primary",
-					"value": "click_me_123"
+					"value": "SUBMITBTN"
 				}
 			]
 		}
@@ -45,11 +45,12 @@ class quizCreation:
 				}
 			}
 
-    def __init__(self, channel):
+    def __init__(self, channel, category_list):
         self.channel = channel
         self.username = "pythonboardingbot"
         self.icon_emoji = ":robot_face:"
         self.timestamp = ""
+        self.category = category_list
 
     def get_message_payload(self):
         return {
@@ -80,7 +81,7 @@ class quizCreation:
                 "text":str(array[x]),
                 "emoji":True
             }
-            obj["value"]="value-"+str(x)
+            obj["value"]=str(array[x])
             options.append(obj)
 
         
@@ -103,28 +104,24 @@ class quizCreation:
 
     def get_category_block(self):
 
-        category=["Coding","Game Of Thrones","History"]
+        #category=["Coding","Game Of Thrones","History"]
 
-        length=len(category)
+        length=len(self.category)
         
         block_title="Pick a category for quiz"
 
         select_title="Select a Category"
 
-        return self.create_select_block(category,length,block_title,select_title)
+        return self.create_select_block(self.category,length,block_title,select_title)
     
 
     """def get_question_number_block(self):
         questions=[5,10,15]
-
         length=3
-
         block_title="Select number of questions for quiz"
-
         select_title="Select questions"
-
         return self.create_select_block(questions,length,block_title,select_title)
-"""
+    """
     
     def get_timespan_block(self):
         time=["5 min","10 min","15 min"]
@@ -136,5 +133,3 @@ class quizCreation:
         select_title ="Select time"
 
         return self.create_select_block(time,length,block_title,select_title)
-
-

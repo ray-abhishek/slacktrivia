@@ -16,7 +16,7 @@ class User(db.Model):
 '''
 
 class Category(db.Model):
-    __tabelname__="category"
+    __tablename__="category"
     id=db.Column(db.Integer,primary_key=True)
     name=db.Column(db.String(100))
     setting=db.Column(db.String(100))
