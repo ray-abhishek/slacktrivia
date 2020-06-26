@@ -14,6 +14,7 @@ class QuizDisplay:
         self.option3 = ""
         self.option4 = ""
         self.answer = ""
+        self.submitted = ""
         #self.reaction_task_completed = False
         #self.pin_task_completed = False
 
