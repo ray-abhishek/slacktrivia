@@ -11,6 +11,7 @@ import ssl as ssl_lib
 import certifi
 from greetings import Greetings
 import json
+from app.sendresult.function import getResult
 
 ssl_context = ssl_lib.create_default_context(cafile=certifi.where())
 
@@ -28,7 +29,7 @@ slack_web_client = WebClient(token=os.environ['SLACK_BOT_TOKEN'])
 #quiz_sent = {}
 onboarding_tutorials_sent = {}
 
-
+"""
 def start_onboarding(user_id: str, channel: str, category_list: list):
     # Create a new quizCreation.
     onboarding_tutorial = quizCreation(channel, category_list)
@@ -71,7 +72,7 @@ def message(payload):
     print(category_list," ARE CATEGORIES")
     if text and text.lower() == "start":
         return start_onboarding(user_id, channel_id, category_list)
-
+"""
 
 
 user_details={}
@@ -86,7 +87,7 @@ def welcomeMessage(payload):
     timestamp=event.get("event_ts")
         
     status=user_details.get((channel_id,user_id),None)
-
+    #getResult(16)
     if status == None:
     
         greeting=Greetings(channel_id)

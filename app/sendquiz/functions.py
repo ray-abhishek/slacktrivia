@@ -32,11 +32,12 @@ def parse_params():
     print(quiz_sent," is quiz_sent")
     if msg_channel in quiz_sent and msg_ts in quiz_sent[msg_channel]:
         #Store Attempts 
-        #We need msg_ts(timestamp) because based on that we'll fetch the Quiz ID and store it. 
-        track_attempts(params["quiz_timestamp"], params["user_id"], parsed_payload["actions"][0]["value"])
-        print("About to update message")
-        prev_quiz_sent = quiz_sent[msg_channel][msg_ts]
-        #update_quiz(prev_quiz_sent)
+        #We need quiz's timestamp because based on that we'll fetch the Quiz ID and store it in Attemp Table.
+        already_present = checkDuplicate(params["quiz_id"],params["user_id"]) 
+        if already_present == False:
+            track_attempts(params["quiz_timestamp"], params["user_id"], parsed_payload["actions"][0]["value"])
+            prev_quiz_sent = quiz_sent[msg_channel][msg_ts]
+            update_quiz(prev_quiz_sent,params["user_id"])
         
   
 
@@ -109,13 +110,13 @@ def display_quiz(user_id: str, channel: str, time_limit: str, category: str, qui
     print(quiz_sent," ARE THE QUIZ SENT SO FAR")
 
 
-def update_quiz(prev_quiz_sent):
+def update_quiz(prev_quiz_sent,userID):
     # This method fetches questions and options from database according to the parameters and using them create a new QuizDisplay Object.
-
-    
+    print(userID," userID to be Appended after Submission.")
+    prev_quiz_sent.submitted.append(userID)
     # Get the onboarding message payload
-    message = prev_quiz_sent.get_message_payload()
-    prev_quiz_sent.inform_user() # Issue : Object is not getting modified. 
+    message = prev_quiz_sent.get_updated_payload()
+    #prev_quiz_sent.inform_user() # Issue : Object is not getting modified. 
     print("++++++++++",message,"+++++++++++")
     # Post the onboarding message in Slack
     response = slack_web_client.chat_update(**message)
@@ -150,7 +151,7 @@ def update_quiz_db(channel_quiz, author_quiz, timestamp_quiz):
         new_quiz_id = row
 
     print(new_quiz_id.id," is the new quiz id")
-
+    params["quiz_id"] = new_quiz_id.id
     return new_quiz_id.id
 
 
@@ -174,3 +175,16 @@ def track_attempts(msg_timestamp, userID, option_value):
     db.session.add(new_attempt)
     db.session.commit()
 
+
+def checkDuplicate(quizID,userID):
+
+    print(quizID," is quizID\n",userID,"is userID\n")
+
+    existing_attempt = Attempt.query.filter(Attempt.quiz_id == quizID).filter(Attempt.user_id == userID).first()
+
+    print(existing_attempt," is the existing attempt")
+
+    if existing_attempt:
+        return True 
+    else:
+        return False 

@@ -14,7 +14,7 @@ class QuizDisplay:
         self.option3 = ""
         self.option4 = ""
         self.answer = ""
-        self.submitted = ""
+        self.submitted = []
         #self.reaction_task_completed = False
         #self.pin_task_completed = False
 
@@ -29,6 +29,22 @@ class QuizDisplay:
                 #self.DIVIDER_BLOCK,
                 self._get_question_block(),
                 self._get_options_block(),
+                #self.DIVIDER_BLOCK,
+            ],
+        }
+
+    def get_updated_payload(self):
+        return {
+            "ts": self.timestamp,
+            "channel": self.channel,
+            "username": self.username,
+            "icon_emoji": self.icon_emoji,
+            "blocks": [
+                #self.QUESTION_BLOCK,
+                #self.DIVIDER_BLOCK,
+                self._get_question_block(),
+                self._get_options_block(),
+                self.updated_submitted_users()
                 #self.DIVIDER_BLOCK,
             ],
         }
@@ -106,7 +122,24 @@ class QuizDisplay:
             self.option4["style"] = "primary"
 
     
+    def updated_submitted_users(self):
+        
+        submitted_users_array = []
 
+        for x in self.submitted:
+            submitted_users_array.append("<@"+str(x)+">")
+
+        submitted_users=",".join(submitted_users_array)
+        if len(submitted_users_array)>0:
+            return  {
+			    "type": "section",
+			    "text": {
+				    "type": "mrkdwn",
+				    "text": "Submitted :mailbox: : "+submitted_users
+			    }
+		    }
+        else:
+            return {}
 
     """
     #This takes the 4 option strings, put them in a JSON Object and returns it.
