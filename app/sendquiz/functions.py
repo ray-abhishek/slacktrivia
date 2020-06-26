@@ -5,6 +5,7 @@ from .. import db, Category, Question, Question_Category
 from slack import WebClient
 from .quizdisplay import QuizDisplay
 import json
+from ..sendquizconfirmation.sendconfirmation import sendConfirmation
 
 slack_web_client = WebClient(token=os.environ['SLACK_BOT_TOKEN'])
 quiz_sent = {}
@@ -56,6 +57,7 @@ def parse_params():
         if params["channel"] != "" and params["time_limit"] != "" and params["category"] != "":
             print("Calling display_quiz()")
             display_quiz(params["user_id"], params["channel"], params["time_limit"], params["category"])
+            sendConfirmation(parsed_payload["response_url"],params["channel"])
 
 
     print("HELLO in CAPSLOC\n\n\n\n\n")
