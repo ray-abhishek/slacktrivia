@@ -25,7 +25,8 @@ Suppose we have pushed a message to Slack using chat.postMessage() of WebAPI and
 
 
 What Slack Needs From Backend 
------------------------------
+------------------
+
 
 Messages can be plain text or interactive. If we want to send interactive messages( in other words, messages that have buttons etc in them which Users can respond to ), we'll need to use Block Kits which is a UI Framework of Slack. 
 Block Kits are in JSON Format.
