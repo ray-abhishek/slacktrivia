@@ -1,0 +1,6 @@
+slackclient>=2.0.0
+slackeventsapi>=2.1.0
+Flask>=1.1.2
+certifi
+flask_sqlalchemy
+SQLAlchemy>=0.8.0

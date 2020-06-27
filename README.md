@@ -24,8 +24,9 @@ There are two main Slack APIs we'll be using to connect with Slack.
 Suppose we have pushed a message to Slack using chat.postMessage() of WebAPI and we want the message to be updated with additional info every time an User reacts with an emoji to it. In that case, we can use Events API 'add_reaction' method to listen to such events, and then we can use chat.update() method of Web API, which takes a previously pushed message as a parameter and updates that specific message. 
 
 
-Sending Messages to Slack 
------------------------------
+What Slack Needs From Backend 
+------------------
+
 
 Messages can be plain text or interactive. If we want to send interactive messages( in other words, messages that have buttons etc in them which Users can respond to ), we'll need to use Block Kits which is a UI Framework of Slack. 
 Block Kits are in JSON Format.
