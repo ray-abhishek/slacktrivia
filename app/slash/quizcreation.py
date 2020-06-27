@@ -124,7 +124,7 @@ class quizCreation:
     """
     
     def get_timespan_block(self):
-        time=["5 min","10 min","15 min"]
+        time=["3 min","5 min","10 min"]
 
         length=3
 

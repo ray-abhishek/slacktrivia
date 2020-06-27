@@ -31,7 +31,7 @@ class QuizDisplay:
                 self._get_options_block(),
                 self.DIVIDER_BLOCK,
                 self.get_context()
-            ],
+            ]
         }
 
     def get_updated_payload(self):
@@ -46,8 +46,23 @@ class QuizDisplay:
                 self.updated_submitted_users(),
                 self.DIVIDER_BLOCK,
                 self.get_context()
-            ],
+            ]
         }
+    
+    def get_timeout_payload(self):
+        return {
+            "ts": self.timestamp,
+            "channel": self.channel,
+            "username": self.username,
+            "icon_emoji": self.icon_emoji,
+            "blocks": [
+                self._get_question_block(),
+                self._get_timeout_options_block(),
+                self.updated_submitted_users(),
+                self.DIVIDER_BLOCK,
+                self.get_context()
+            ]
+        } 
 
     #This takes the question string, puts it in JSON Object and returns it.
     def _get_question(self,question):
@@ -72,6 +87,13 @@ class QuizDisplay:
 			"value": str(option)
         }
 
+    def _build_timeout_option(self,option):
+        return{
+                "type": "plain_text",
+                "text": "• " + str(option),
+                "emoji": True
+		}
+
     #This takes the 4 json option objects, wraps them in the actions type Block Object and returns it.
     def _get_options(self):
         return {
@@ -87,6 +109,19 @@ class QuizDisplay:
     #This returns the options block.
     def _get_options_block(self):
         return self._get_options()
+
+    
+    def _get_timeout_options_block(self):
+
+        option1 = self._build_timeout_option(self.option1["text"]["text"])
+        option2 = self._build_timeout_option(self.option2["text"]["text"])
+        option3 = self._build_timeout_option(self.option3["text"]["text"])
+        option4 = self._build_timeout_option(self.option4["text"]["text"])
+
+        return {
+                "type": "section",
+                "fields":[option1,option2,option3,option4]
+            }
 
     # This init_message is called from run.py and supplied the parameters. Once the questions and options have been initialised, the message payload(get_message_payload) can be used to return Message Object
     def init_message(self,question,op1,op2,op3,op4,op5):

@@ -6,10 +6,14 @@ from slack import WebClient
 from .quizdisplay import QuizDisplay
 import json
 from ..sendquizconfirmation.sendconfirmation import sendConfirmation
+from ..sendresult.function import getResult
+import sched
+import time
 
 slack_web_client = WebClient(token=os.environ['SLACK_BOT_TOKEN'])
 quiz_sent = {}
 params = {}
+scheduler = sched.scheduler(time.time, time.sleep)
 
 @sendquiz.route("/actions",methods=['GET','POST'])
 def parse_params():
@@ -62,8 +66,16 @@ def parse_params():
             params["quiz_timestamp"] = msg_ts
             #print("Calling display_quiz()")
             quiz_id = update_quiz_db(params["channel"], params["user_id"], msg_ts)
-            display_quiz(params["user_id"], params["channel"], params["time_limit"], params["category"], quiz_id)
+            time_stamp = display_quiz(params["user_id"], params["channel"], params["time_limit"], params["category"], quiz_id)
             sendConfirmation(parsed_payload["response_url"],params["channel"])
+            
+            #logic for scheduling the quiz
+            time = params["time_limit"].split(" ")
+            duration = int(time[0]) * 60
+
+            scheduler.enter(duration,1,update_quiz_timeout,(msg_channel,time_stamp,))
+            scheduler.enter(duration+4,1,getResult,(quiz_id,))
+            scheduler.run()
 
     return {"message":"hello"}
 
@@ -106,6 +118,8 @@ def display_quiz(user_id: str, channel: str, time_limit: str, category: str, qui
     quiz_sent[channel][quiz_display.timestamp] = quiz_display
 
     print(quiz_sent," ARE THE QUIZ SENT SO FAR")
+
+    return response["ts"]
 
 
 def update_quiz(prev_quiz_sent,userID):
@@ -181,4 +195,11 @@ def checkDuplicate(quizID,userID):
     if existing_attempt:
         return True 
     else:
-        return False 
+        return False
+
+def update_quiz_timeout(channel,timestamp):
+    quiz_message = quiz_sent[channel][timestamp]
+
+    message = quiz_message.get_timeout_payload()
+
+    response = slack_web_client.chat_update(**message)
