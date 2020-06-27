@@ -32,7 +32,7 @@ def parse_params():
     print(quiz_sent," is quiz_sent")
     if msg_channel in quiz_sent and msg_ts in quiz_sent[msg_channel]:
         #Store Attempts 
-        #We need quiz's timestamp because based on that we'll fetch the Quiz ID and store it in Attemp Table.
+        #We need quiz's timestamp because based on that we'll fetch the Quiz ID and store it in Attempt Table.
         already_present = checkDuplicate(params["quiz_id"],params["user_id"]) 
         if already_present == False:
             track_attempts(params["quiz_timestamp"], params["user_id"], parsed_payload["actions"][0]["value"])
@@ -55,18 +55,16 @@ def parse_params():
             params["category"] = parsed_payload["actions"][0]["selected_option"]["value"]
 
     elif parsed_payload["actions"][0]["value"] == "SUBMITBTN":
-        print(params["channel"]," is channel")
-        print(params["time_limit"]," is time_limit")
-        print(params["category"]," category")
+        #print(params["channel"]," is channel")
+        #print(params["time_limit"]," is time_limit")
+        #print(params["category"]," category")
         if params["channel"] != "" and params["time_limit"] != "" and params["category"] != "":
             params["quiz_timestamp"] = msg_ts
-            print("Calling display_quiz()")
+            #print("Calling display_quiz()")
             quiz_id = update_quiz_db(params["channel"], params["user_id"], msg_ts)
             display_quiz(params["user_id"], params["channel"], params["time_limit"], params["category"], quiz_id)
             sendConfirmation(parsed_payload["response_url"],params["channel"])
 
-
-    print("HELLO in CAPSLOC\n\n\n\n\n")
     return {"message":"hello"}
 
 
@@ -82,7 +80,7 @@ def display_quiz(user_id: str, channel: str, time_limit: str, category: str, qui
     print(first_row," is raw_data[0]")
 
 
-    quiz_display = QuizDisplay(channel)
+    quiz_display = QuizDisplay(channel,user_id,time_limit)
 
     quiz_display.init_message(first_row[1],first_row[2],first_row[3],first_row[4],first_row[5],first_row[6])
 
@@ -114,16 +112,12 @@ def update_quiz(prev_quiz_sent,userID):
     # This method fetches questions and options from database according to the parameters and using them create a new QuizDisplay Object.
     print(userID," userID to be Appended after Submission.")
     prev_quiz_sent.submitted.append(userID)
-    # Get the onboarding message payload
-    message = prev_quiz_sent.get_updated_payload()
-    #prev_quiz_sent.inform_user() # Issue : Object is not getting modified. 
+    # Get the QuizDisplay Message Payload
+    message = prev_quiz_sent.get_updated_payload() 
     print("++++++++++",message,"+++++++++++")
-    # Post the onboarding message in Slack
+    # Post the updated Message Payload to Slack
     response = slack_web_client.chat_update(**message)
 
-    # Capture the timestamp of the message we've just posted so
-    # we can use it to update the message after a user
-    # has completed an onboarding task.
     """
     quiz_display.timestamp = response["ts"]
     print("----------------------",quiz_display.get_message_payload(),"----------------- is the message")

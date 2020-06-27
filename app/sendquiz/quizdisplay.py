@@ -1,9 +1,9 @@
 class QuizDisplay:
     """Constructs the question and options and stores the state of which options were selected."""
 
-    #DIVIDER_BLOCK = {"type": "divider"}
+    DIVIDER_BLOCK = {"type": "divider"}
 
-    def __init__(self, channel):
+    def __init__(self, channel, author, time_limit):
         self.channel = channel
         self.username = "QuizBot"
         self.icon_emoji = ":robot_face:"
@@ -15,6 +15,8 @@ class QuizDisplay:
         self.option4 = ""
         self.answer = ""
         self.submitted = []
+        self.author = author 
+        self.time_limit = time_limit
         #self.reaction_task_completed = False
         #self.pin_task_completed = False
 
@@ -25,11 +27,10 @@ class QuizDisplay:
             "username": self.username,
             "icon_emoji": self.icon_emoji,
             "blocks": [
-                #self.QUESTION_BLOCK,
-                #self.DIVIDER_BLOCK,
                 self._get_question_block(),
                 self._get_options_block(),
-                #self.DIVIDER_BLOCK,
+                self.DIVIDER_BLOCK,
+                self.get_context()
             ],
         }
 
@@ -40,12 +41,11 @@ class QuizDisplay:
             "username": self.username,
             "icon_emoji": self.icon_emoji,
             "blocks": [
-                #self.QUESTION_BLOCK,
-                #self.DIVIDER_BLOCK,
                 self._get_question_block(),
                 self._get_options_block(),
-                self.updated_submitted_users()
-                #self.DIVIDER_BLOCK,
+                self.updated_submitted_users(),
+                self.DIVIDER_BLOCK,
+                self.get_context()
             ],
         }
 
@@ -140,6 +140,22 @@ class QuizDisplay:
 		    }
         else:
             return {}
+
+
+    def get_context(self):
+        return {
+			"type": "context",
+			"elements": [
+				{
+					"type": "mrkdwn",
+					"text": "Created by "+"<@"+str(self.author)+">" + ":sunglasses:"
+				},
+                {
+					"type": "mrkdwn",
+					"text": "Quiz closes in *"+self.time_limit+"* :heavy_exclamation_mark:"
+				}
+			]
+		}
 
     """
     #This takes the 4 option strings, put them in a JSON Object and returns it.
