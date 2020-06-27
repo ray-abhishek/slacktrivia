@@ -4,7 +4,7 @@ from flask import Flask, request
 from app import create_app
 from slack import WebClient
 from slackeventsapi import SlackEventAdapter
-from quizcreation import quizCreation
+from app.slash.quizcreation import quizCreation
 from app.models import db, Category, Question, Question_Category
 #from quizdisplay import QuizDisplay
 import ssl as ssl_lib
