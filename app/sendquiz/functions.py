@@ -15,6 +15,8 @@ quiz_sent = {}
 params = {}
 scheduler = sched.scheduler(time.time, time.sleep)
 
+create_quiz={}
+
 @sendquiz.route("/actions",methods=['GET','POST'])
 def parse_params():
 
@@ -25,15 +27,73 @@ def parse_params():
 
 
     parsed_payload = json.loads(request.form["payload"])
-    print(parsed_payload," is the parsed_payload")
+
+    if parsed_payload["view"]["type"] == "modal" or parsed_payload["type"] == "view_submission":
+        
+        if parsed_payload["type"] == "block_actions":
+            create_quiz[(parsed_payload["user"]["team_id"],parsed_payload["user"]["id"])] = {}
+
+            create_quiz[(parsed_payload["user"]["team_id"],parsed_payload["user"]["id"])]["channel"] = parsed_payload["actions"][0]["selected_channel"]
+
+        else:
+            obj_key = (parsed_payload["user"]["team_id"],parsed_payload["user"]["id"])
+
+            blocks = parsed_payload["view"]["blocks"]
+
+            data = parsed_payload["view"]["state"]["values"]
+
+            category = data[blocks[1]["block_id"]][blocks[1]["element"]["action_id"]]["selected_option"]["value"]
+
+            time = data[blocks[-2]["block_id"]][blocks[-2]["element"]["action_id"]]["selected_option"]["value"]
+
+            question = data[blocks[2]["block_id"]][blocks[2]["element"]["action_id"]]["value"]
+
+            answer = data[blocks[3]["block_id"]][blocks[3]["element"]["action_id"]]["value"]
+
+            option2 = data[blocks[4]["block_id"]][blocks[4]["element"]["action_id"]]["value"]
+
+            option3 = data[blocks[5]["block_id"]][blocks[5]["element"]["action_id"]]["value"]
+
+            option4 = data[blocks[6]["block_id"]][blocks[6]["element"]["action_id"]]["value"]
+            
+            hash1 = parsed_payload["view"]["hash"]
+            
+
+            if create_quiz.get(obj_key,None) == None:
+                block_id = blocks[-2]["block_id"]
+
+                return {
+                    "response_action": "errors",
+                    "errors": {
+                        str(block_id): "Please Select a channel to post quiz"
+                    }
+                }
+            
+            create_quiz[obj_key]["time_limit"] = time
+            create_quiz[obj_key]["category"] = category
+            create_quiz[obj_key]["question"] = question
+            create_quiz[obj_key]["answer"] = answer
+            create_quiz[obj_key]["option2"] = option2
+            create_quiz[obj_key]["option3"] = option3
+            create_quiz[obj_key]["option4"] = option4
+            create_quiz[obj_key]["hash"] = hash1
+
+            data = create_quiz[obj_key]
+
+            print(data)
+
+        return {"response_action": "clear"}
+
+
 
     params["user_id"] = parsed_payload["user"]["id"]
 
     msg_ts = parsed_payload["container"]["message_ts"]
     msg_channel = parsed_payload["container"]["channel_id"]
-    print(msg_ts," is msg_ts")
+    """print(msg_ts," is msg_ts")
     print(msg_channel," is channel")
-    print(quiz_sent," is quiz_sent")
+    print(quiz_sent," is quiz_sent")"""
+
     if msg_channel in quiz_sent and msg_ts in quiz_sent[msg_channel]:
         #Store Attempts 
         #We need quiz's timestamp because based on that we'll fetch the Quiz ID and store it in Attempt Table.
