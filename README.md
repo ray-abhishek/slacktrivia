@@ -75,3 +75,8 @@ Every time one of above commands are entered by User in Message Composer Box, an
 Currently, we're only using 2 entry points. 
 1. When User opens App Home
 2. When User enters a slash command. 
+
+
+Below is a representation of how Code is structured.
+
+![N|Solid](https://i.imgur.com/P3nmyHS.jpg)
