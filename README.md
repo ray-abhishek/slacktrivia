@@ -79,4 +79,4 @@ Currently, we're only using 2 entry points.
 
 Below is a representation of how Code is structured.
 
-![N|Solid](https://i.imgur.com/P3nmyHS.jpg)
+![N|Solid](https://i.imgur.com/lcYSl6e.jpg)
