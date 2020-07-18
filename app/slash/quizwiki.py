@@ -15,6 +15,14 @@ class quizWiki:
 				"text": "`/quiz help`: List quiz commands"
 			}
 		}
+
+    CUSTOM_BLOCK = {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "`/quiz create` : Starts Custom Quiz Creation Prompt"
+			}
+		}
     
     def __init__(self, channel):
         self.channel = channel
@@ -28,6 +36,7 @@ class quizWiki:
             "icon_emoji": self.icon_emoji,
             "blocks":[
                 self.CREATE_BLOCK,
+                self.CUSTOM_BLOCK,
                 self.HELP_BLOCK
             ]
         }

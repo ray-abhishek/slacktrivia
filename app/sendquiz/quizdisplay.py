@@ -5,7 +5,7 @@ class QuizDisplay:
 
     def __init__(self, channel, author, time_limit):
         self.channel = channel
-        self.username = "QuizBot"
+        self.username = "QuizTopia"
         self.icon_emoji = ":robot_face:"
         self.timestamp = ""
         self.question = ""
@@ -17,8 +17,6 @@ class QuizDisplay:
         self.submitted = []
         self.author = author 
         self.time_limit = time_limit
-        #self.reaction_task_completed = False
-        #self.pin_task_completed = False
 
     def get_message_payload(self):
         return {
@@ -60,7 +58,7 @@ class QuizDisplay:
                 self._get_timeout_options_block(),
                 self.updated_submitted_users(),
                 self.DIVIDER_BLOCK,
-                self.get_context()
+                self.get_context_closed()
             ]
         } 
 
@@ -132,35 +130,11 @@ class QuizDisplay:
         self.option4 = self._build_option(op4) 
         self.answer = self._build_option(op5)
 
-    # This method takes the correct answer as parameter and accordingly changes the color of the correct option to green, and rest to red. 
-    def inform_user(self):
-        print("----------------Modifying Color According to Correctness of Option-----------")
-        if self.answer==self.option1["value"]:
-            self.option1["style"] = "primary"
-            self.option2["style"] = "danger"
-            self.option3["style"] = "danger"
-            self.option4["style"] = "danger"
-        elif self.answer==self.option2["value"]:
-            self.option1["style"] = "danger"
-            self.option2["style"] = "primary"
-            self.option3["style"] = "danger"
-            self.option4["style"] = "danger"
-        elif self.answer==self.option3["value"]:
-            self.option1["style"] = "danger"
-            self.option2["style"] = "danger"
-            self.option3["style"] = "primary"
-            self.option4["style"] = "danger"
-        elif self.answer==self.option4["value"]:
-            self.option1["style"] = "danger"
-            self.option2["style"] = "danger"
-            self.option3["style"] = "danger"
-            self.option4["style"] = "primary"
 
     
     def updated_submitted_users(self):
         
         submitted_users_array = []
-
         for x in self.submitted:
             submitted_users_array.append("<@"+str(x)+">")
 
@@ -174,7 +148,13 @@ class QuizDisplay:
 			    }
 		    }
         else:
-            return {}
+            return {
+			    "type": "section",
+			    "text": {
+				    "type": "mrkdwn",
+				    "text": "Submitted :mailbox: : "+str(0)
+			    }
+		    }
 
 
     def get_context(self):
@@ -192,53 +172,21 @@ class QuizDisplay:
 			]
 		}
 
-    """
-    #This takes the 4 option strings, put them in a JSON Object and returns it.
-    @staticmethod
-    def _get_options(option1, option2, option3, option4):
+    def get_context_closed(self):
         return {
-            "type": "actions",
+			"type": "context",
 			"elements": [
 				{
-					"type": "button",
-					"text": {
-						"type": "plain_text",
-						"text": str(option1),
-						"emoji": True
-					},
-					"value": str(option1)
+					"type": "mrkdwn",
+					"text": "Created by "+"<@"+str(self.author)+">" + ":sunglasses:"
 				},
-				{
-					"type": "button",
-					"text": {
-						"type": "plain_text",
-						"text": str(option2),
-						"emoji": True
-					},
-					"value": str(option2)
-				},
-				{
-					"type": "button",
-					"text": {
-						"type": "plain_text",
-						"text": str(option3),
-						"emoji": True
-					},
-					"value": str(option3),
-                    
-				},
-				{
-					"type": "button",
-					"text": {
-						"type": "plain_text",
-						"text": str(option4),
-						"emoji": True
-					},
-					"value": str(option4)"
+                {
+					"type": "mrkdwn",
+					"text": "Quiz closed :heavy_exclamation_mark:"
 				}
 			]
-        }
-    """
+		}
+
     
 
    

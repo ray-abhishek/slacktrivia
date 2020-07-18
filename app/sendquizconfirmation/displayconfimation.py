@@ -2,7 +2,7 @@ class displayConfirmation:
     
     def __init__(self,channel):
         self.channel = channel
-        self.username = "pythonboardingbot"
+        self.username = "QuizTopia"
         self.icon_emoji = ":robot_face:"
 
     

@@ -11,7 +11,7 @@ class resultDisplay:
     
     def __init__(self, channel, answer, user_data):
         self.channel = channel
-        self.username = "pythonboardingbot"
+        self.username = "QuizTopia"
         self.icon_emoji = ":robot_face:"
         self.correct_answer = answer
         self.user_data = user_data

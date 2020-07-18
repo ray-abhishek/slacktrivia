@@ -47,7 +47,7 @@ class quizCreation:
 
     def __init__(self, channel, category_list):
         self.channel = channel
-        self.username = "pythonboardingbot"
+        self.username = "QuizTopia"
         self.icon_emoji = ":robot_face:"
         self.timestamp = ""
         self.category = category_list
@@ -103,33 +103,16 @@ class quizCreation:
 		}
 
     def get_category_block(self):
-
-        #category=["Coding","Game Of Thrones","History"]
-
         length=len(self.category)
-        
         block_title="Pick a category for quiz"
-
         select_title="Select a Category"
-
         return self.create_select_block(self.category,length,block_title,select_title)
     
 
-    """def get_question_number_block(self):
-        questions=[5,10,15]
-        length=3
-        block_title="Select number of questions for quiz"
-        select_title="Select questions"
-        return self.create_select_block(questions,length,block_title,select_title)
-    """
     
     def get_timespan_block(self):
-        time=["3 min","5 min","10 min"]
-
+        time=["30 seconds","1 min","2 min"]
         length=3
-
         block_title ="Select time span of the quiz"
-
         select_title ="Select time"
-
         return self.create_select_block(time,length,block_title,select_title)
