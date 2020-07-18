@@ -7,6 +7,9 @@ from .quizcustomdisplay import quizCustomDisplay
 from ..models import db, Category, Question, Question_Category
 from slack import WebClient
 import os
+from multiprocessing import Process
+from .randomfacts import facts
+from .iss import satellite
 
 
 slack_web_client = WebClient(token=os.environ['SLACK_BOT_TOKEN'])
@@ -46,5 +49,21 @@ def createQuiz():
         response = slack_web_client.views_open(**message)
 
         return ""
+    
+    if data["command"] == "/quiz" and data["text"] == "fact":
+
+        sub = Process(target=facts,args=(data,))
+        sub.start()
+
+        return {"response_type":"ephemeral","text":"Bot will send random fact here soon"}
+
+    if data["command"] == "/quiz" and data["text"] == "space":
+
+        sat = Process(target=satellite,args=(data,))
+        sat.start()
+
+        return {"response_type":"ephemeral","text":"Please wait while I fetch the location of ISS for you!"}
+
+
 
     return "Please refer `/quiz help` to know how to use `/quiz` command"
