@@ -23,6 +23,22 @@ class quizWiki:
 				"text": "`/quiz create` : Starts Custom Quiz Creation Prompt"
 			}
 		}
+
+    SPACE_BLOCK = {
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": "`/quiz space` : Sends real time information of International Space Station"
+        }
+    }
+
+    FACT_BLOCK = {
+    "type": "section",
+    "text": {
+        "type": "mrkdwn",
+        "text": "`/quiz fact` : Sends an interesting fact"
+    }
+    }
     
     def __init__(self, channel):
         self.channel = channel
@@ -37,7 +53,9 @@ class quizWiki:
             "blocks":[
                 self.CREATE_BLOCK,
                 self.CUSTOM_BLOCK,
-                self.HELP_BLOCK
+                self.HELP_BLOCK,
+                self.SPACE_BLOCK,
+                self.FACT_BLOCK
             ]
         }
 

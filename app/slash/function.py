@@ -55,14 +55,14 @@ def createQuiz():
         sub = Process(target=facts,args=(data,))
         sub.start()
 
-        return {"response_type":"ephemeral","text":"Bot will send random fact here soon"}
+        return {"response_type":"ephemeral","text":"Please wait while I fetch an interesting fact for you!"}
 
     if data["command"] == "/quiz" and data["text"] == "space":
 
         sat = Process(target=satellite,args=(data,))
         sat.start()
 
-        return {"response_type":"ephemeral","text":"Please wait while I fetch the location of ISS for you!"}
+        return {"response_type":"ephemeral","text":"Please wait while I fetch the information of ISS for you!"}
 
 
 

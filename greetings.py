@@ -4,7 +4,7 @@ class Greetings:
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "Hey, I am QuizBot. To know my commands , type  `/quiz help`"
+                    "text": "Hey, I am QuizTopia. To know my commands , type  `/quiz help`"
 			    }
 		    }
 
